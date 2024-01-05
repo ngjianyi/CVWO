@@ -13,7 +13,7 @@ class ForumCommentsController < ApplicationController
     render json: @forum_comment
   end
 
-  # Specific thread's comments
+  # GET specific thread's comments
   def thread_comments
     @comments = ForumComment.all.select { |comment| comment.forum_thread_id == Integer(params[:forum_thread_id])}
     render json: @comments
