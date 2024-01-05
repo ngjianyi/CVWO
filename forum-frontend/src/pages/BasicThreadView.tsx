@@ -20,7 +20,7 @@ const BasicThreadView: React.FC = () => {
         <div style={{ width: "25vw", margin: "auto", textAlign: "center" }}>
             <h3>{"Inspirational Quotes"}</h3>
             <h4>{"Thread started by Aiken"}</h4>
-            <BasicCommentList styled={false} />
+            <BasicCommentList />
             <Link to="/">{`<- Back to threads`}</Link>
             <br />
             <br />

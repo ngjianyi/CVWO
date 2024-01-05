@@ -1,7 +1,7 @@
 type Comment = {
-    body: string;
+    id: number;
+    content: string;
     author: string;
-    timestamp: Date;
 };
 
 export default Comment;

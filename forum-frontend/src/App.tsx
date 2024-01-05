@@ -19,7 +19,7 @@ const App: React.FC = () => {
             <ThemeProvider theme={theme}>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/thread/1/" element={<StyledThreadView />} />
+                        <Route path="/thread/:id" element={<StyledThreadView />} />
                         <Route path="/" element={<Home />} />
                     </Routes>
                 </BrowserRouter>

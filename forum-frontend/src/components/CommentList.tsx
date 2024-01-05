@@ -1,41 +1,32 @@
 import CommentItem from "./CommentItem";
 import Comment from "../types/Comment";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
-import React from "react";
+const BasicCommentList: React.FC = () => {
+    const params = useParams();
+    const navigate = useNavigate();
+    const [comments, setComments] = useState([]);
 
-type Props = {
-    styled: boolean;
-};
+    useEffect(() => {
+        const url = `http://localhost:4000/thread_comments/${params.id}`;
+        fetch(url)
+            .then((res) => {
+                if (res.ok) {
+                    return res.json();
+                }
+                throw new Error("Network response was not ok.");
+            })
+            .then((res) => setComments(res))
+            .catch(() => navigate("/"));
+    }, [params.id]);
 
-const BasicCommentList: React.FC<Props> = ({ styled }: Props) => {
-    const comments: Comment[] = [
-        {
-            body:
-                "Any fool can write code that a computer can understand.\n" +
-                "Good programmers write code that humans can understand.\n" +
-                " ~ Martin Fowler",
-            author: "Benedict",
-            timestamp: new Date(2022, 10, 28, 10, 33, 30),
-        },
-        {
-            body: "Code reuse is the Holy Grail of Software Engineering.\n" + " ~ Douglas Crockford",
-            author: "Casey",
-            timestamp: new Date(2022, 11, 1, 11, 11, 11),
-        },
-        {
-            body: "Nine people can't make a baby in a month.\n" + " ~ Fred Brooks",
-            author: "Duuet",
-            timestamp: new Date(2022, 11, 2, 10, 30, 0),
-        },
-    ];
+    const no_comments: JSX.Element = <p>Be the first to comment!</p>;
+    const all_comments: JSX.Element[] = comments.map((comment: Comment) => (
+        <CommentItem comment={comment} key={comment.id} />
+    ));
 
-    return (
-        <ul>
-            {comments.map((comment) => (
-                <CommentItem comment={comment} styled={styled} key="" />
-            ))}
-        </ul>
-    );
+    return <ul>{comments.length > 0 ? all_comments : no_comments}</ul>;
 };
 
 export default BasicCommentList;

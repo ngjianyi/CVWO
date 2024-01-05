@@ -1,15 +1,15 @@
 import BasicCommentList from "../components/CommentList";
-import Thread from "../types/Thread";
 import { Button, Card, CardContent, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
 const StyledThreadView: React.FC = () => {
+    const params = useParams();
     const navigate = useNavigate();
-    const [threads, setThreads] = useState([]);
+    const [thread, setThread] = useState({ id: "", title: "", content: "" });
 
     useEffect(() => {
-        const url = "http://localhost:4000/forum_threads";
+        const url = `http://localhost:4000/forum_threads/${params.id}`;
         fetch(url)
             .then((res) => {
                 if (res.ok) {
@@ -17,13 +17,12 @@ const StyledThreadView: React.FC = () => {
                 }
                 throw new Error("Network response was not ok.");
             })
-            .then((res) => setThreads(res))
+            .then((res) => setThread(res))
             .catch(() => navigate("/"));
-    }, []);
+    }, [params.id]);
 
-    // const no_threads = (<></>);
-    const all_threads = threads.map((thread: Thread) => (
-        <Card key="" style={{ backgroundColor: "red" }}>
+    const threads: JSX.Element = (
+        <Card key={thread.id}>
             <CardContent>
                 <Typography component="p">{"Viewing thread:"}</Typography>
                 <Typography variant="h5" component="h5">
@@ -34,13 +33,13 @@ const StyledThreadView: React.FC = () => {
                 </Typography>
             </CardContent>
         </Card>
-    ));
+    );
 
     return (
         <div style={{ width: "30vw", margin: "auto" }}>
-            <div>{all_threads}</div>
+            <div>{threads}</div>
 
-            <BasicCommentList styled={true} />
+            <BasicCommentList />
 
             <Link to="/">
                 <Button variant="contained" color="secondary">
