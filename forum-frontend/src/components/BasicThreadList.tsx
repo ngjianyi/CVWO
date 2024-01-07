@@ -25,7 +25,7 @@ const BasicThreadList: React.FC = () => {
 
     const no_threads: JSX.Element = <h3>Sign in the add a thread!</h3>;
     const all_threads: JSX.Element[] = threads.map((thread: Thread) => (
-        <ThreadItem thread={thread} showbutton={true} key={thread.id} />
+        <ThreadItem thread={thread} indivthread={false} key={thread.id} />
     ));
 
     // threads.map((thread: Thread) => (

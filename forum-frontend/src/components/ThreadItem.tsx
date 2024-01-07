@@ -7,8 +7,7 @@ import { makeStyles } from "@mui/styles";
 
 type Props = {
     thread: Thread;
-    showbutton: boolean;
-    key: number;
+    indivthread: boolean;
 };
 const useStyles = makeStyles(() => ({
     threadBody: {
@@ -24,20 +23,20 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const ThreadItem: React.FC<Props> = ({ thread, showbutton }) => {
+const ThreadItem: React.FC<Props> = ({ thread, indivthread }) => {
     const classes = useStyles();
 
     return (
         <Card className={classes.threadCard}>
             <CardContent>
-                <Typography component="p">{"Viewing thread:"}</Typography>
+                {indivthread && <Typography component="p">{"Viewing thread:"}</Typography>}
                 <Typography variant="h5" component="h5" className={classes.threadBody}>
                     {thread.title}
                 </Typography>
                 <Typography variant="body2" component="p" className={classes.metadata}>
                     {thread.content}
                 </Typography>
-                {showbutton && (
+                {!indivthread && (
                     <Link to={`/thread/${thread.id}`}>
                         <Button variant="contained" color="secondary">
                             View comments

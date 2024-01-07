@@ -1,5 +1,6 @@
 import Home from "./pages/Home";
 import ThreadView from "./pages/ThreadView";
+import CommentForm from "./components/CommentForm";
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -21,6 +22,7 @@ const App: React.FC = () => {
                     <Routes>
                         <Route path="/thread/:id" element={<ThreadView />} />
                         <Route path="/" element={<Home />} />
+                        <Route path="/hmm" element={<CommentForm />} />
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

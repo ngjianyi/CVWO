@@ -22,7 +22,7 @@ const ThreadView: React.FC = () => {
             .catch(() => navigate("/"));
     }, [params.id]);
 
-    const all_threads: JSX.Element = <ThreadItem thread={thread} key={thread.id} showbutton={false} />;
+    const all_threads: JSX.Element = <ThreadItem thread={thread} indivthread={true} key={thread.id} />;
 
     return (
         <div style={{ width: "30vw", margin: "auto" }}>
