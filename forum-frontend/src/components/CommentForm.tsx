@@ -1,5 +1,7 @@
+import Thread from "../types/Thread";
 import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -7,7 +9,18 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 // import { ThemeProvider } from "@mui/material/styles";
 
-export default function CommentForm() {
+type Props = {
+    thread: Thread;
+};
+
+type Body = {
+    content: string;
+    author: string;
+    forum_thread_id: number;
+    user_id: number;
+};
+
+const CommentForm: React.FC<Props> = ({ thread }) => {
     // const navigate = useNavigate();
     const [comment, setComment] = useState("");
 
@@ -15,32 +28,31 @@ export default function CommentForm() {
         return String(str).replace(/\n/g, "<br> <br>").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         const url = "http://localhost:4000/forum_comments";
-        const body = {
+        const body: Body = {
             content: stripHtmlEntities(comment),
-            author: "test1", // PLACEHOLDER TO UPDATE!
-            forum_thread_id: 1, // PLACEHOLDER TO UPDATE!
-            user_id: 1, // PLACEHOLDER TO UPDATE!
+            author: "user2", // TO UPDATE
+            forum_thread_id: parseInt(`${thread.id}`),
+            user_id: 2, // TO UPDATE
         };
-
         // const token = document.querySelector('meta[name="csrf-token"]').content;
-        const response: Response = await fetch(url, {
-            method: "POST",
+        const header = {
             headers: {
                 // "X-CSRF-Token": token,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(body),
-        });
+        };
 
-        if (!response.ok) {
-            throw new Error("Network response was not ok.");
-        }
+        await axios
+            .post<Body>(url, body, header)
+            .then((res) => console.log(res))
+            .catch((error: Error | AxiosError) => {
+                console.log(error);
+            });
 
         setComment("");
-        return response.json();
     };
 
     return (
@@ -49,7 +61,7 @@ export default function CommentForm() {
             <CssBaseline />
             <Box
                 sx={{
-                    marginTop: 8,
+                    marginTop: 5,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -59,7 +71,7 @@ export default function CommentForm() {
                     <TextField
                         margin="normal"
                         variant="filled"
-                        // required
+                        required
                         fullWidth
                         id="comment"
                         label="Add a comment!"
@@ -75,4 +87,6 @@ export default function CommentForm() {
         </Container>
         // </ThemeProvider>
     );
-}
+};
+
+export default CommentForm;

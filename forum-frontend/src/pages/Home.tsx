@@ -1,4 +1,4 @@
-import BasicThreadList from "../components/BasicThreadList";
+import ThreadList from "../components/ThreadList";
 import React from "react";
 
 const Home: React.FC = () => {
@@ -6,7 +6,7 @@ const Home: React.FC = () => {
         <>
             <h3>{"Welcome to my forum!"}</h3>
             <br />
-            <BasicThreadList />
+            <ThreadList />
         </>
     );
 };

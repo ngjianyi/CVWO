@@ -9,14 +9,15 @@ type Props = {
     thread: Thread;
     indivthread: boolean;
 };
+
 const useStyles = makeStyles(() => ({
     threadBody: {
         fontSize: 24,
         whiteSpace: "pre-wrap",
-        paddingBottom: "2em",
+        paddingBottom: "1em",
     },
     threadCard: {
-        marginBottom: "2em",
+        marginBottom: "1em",
     },
     metadata: {
         fontSize: 20,
@@ -29,13 +30,15 @@ const ThreadItem: React.FC<Props> = ({ thread, indivthread }) => {
     return (
         <Card className={classes.threadCard}>
             <CardContent>
-                {indivthread && <Typography component="p">{"Viewing thread:"}</Typography>}
                 <Typography variant="h5" component="h5" className={classes.threadBody}>
                     {thread.title}
                 </Typography>
-                <Typography variant="body2" component="p" className={classes.metadata}>
-                    {thread.content}
-                </Typography>
+                {indivthread && (
+                    <Typography variant="body2" component="p" className={classes.metadata}>
+                        {thread.content}
+                    </Typography>
+                )}
+                {indivthread && <Typography component="p">{`Posted by: ${thread.author}`}</Typography>}
                 {!indivthread && (
                     <Link to={`/thread/${thread.id}`}>
                         <Button variant="contained" color="secondary">

@@ -1,24 +1,23 @@
 import CommentItem from "./CommentItem";
 import Comment from "../types/Comment";
-import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 
 const BasicCommentList: React.FC = () => {
     const params = useParams();
-    const navigate = useNavigate();
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
         const url = `http://localhost:4000/thread_comments/${params.id}`;
-        fetch(url)
-            .then((res) => {
-                if (res.ok) {
-                    return res.json();
-                }
-                throw new Error("Network response was not ok.");
+        axios
+            .get(url)
+            .then((response) => {
+                setComments(response.data);
             })
-            .then((res) => setComments(res))
-            .catch(() => navigate("/"));
+            .catch((error: Error | AxiosError) => {
+                console.log(error);
+            });
     }, [params.id]);
 
     const no_comments: JSX.Element = <p>Be the first to comment!</p>;

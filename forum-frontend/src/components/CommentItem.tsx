@@ -7,6 +7,7 @@ import { makeStyles } from "@mui/styles";
 type Props = {
     comment: Comment;
 };
+
 const useStyles = makeStyles(() => ({
     commentBody: {
         fontSize: 16,
