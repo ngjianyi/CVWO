@@ -15,8 +15,9 @@ class ForumCommentsController < ApplicationController
 
   # GET specific thread's comments
   def thread_comments
-    @comments = ForumComment.all.select { |comment| comment.forum_thread_id == Integer(params[:forum_thread_id])}
-    render json: @comments
+    @comments = ForumComment.all.order(created_at: :desc).select { |comment| comment.forum_thread_id == Integer(params[:forum_thread_id]) }
+    @full_comments = @comments.map{ |comment| {comment: comment, author: comment.user.username }}
+    render json: @full_comments
   end
 
   # POST /forum_comments
@@ -52,6 +53,6 @@ class ForumCommentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def forum_comment_params
-      params.require(:forum_comment).permit(:content, :author, :forum_thread_id, :user_id)
+      params.require(:forum_comment).permit(:id, :content, :forum_thread_id, :user_id)
     end
 end

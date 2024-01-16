@@ -3,14 +3,16 @@ class ForumThreadsController < ApplicationController
 
   # GET /forum_threads
   def index
-    @forum_threads = ForumThread.all
-
-    render json: @forum_threads
+    @forum_threads = ForumThread.all.order(created_at: :desc)
+    @full_threads = @forum_threads.map{ |thread| {forum_thread: thread, author: thread.user.username, forum_category: thread.forum_category.name}}
+    render json: @full_threads
   end
 
   # GET /forum_threads/1
   def show
-    render json: @forum_thread
+    author = @forum_thread.user.username
+    forum_category = @forum_thread.forum_category.name
+    render json: {forum_thread: @forum_thread, author: author, forum_category: forum_category}
   end
 
   # POST /forum_threads
@@ -30,7 +32,7 @@ class ForumThreadsController < ApplicationController
       render json: @forum_thread
     else
       render json: @forum_thread.errors, status: :unprocessable_entity
-    end
+    end 
   end
 
   # DELETE /forum_threads/1
@@ -46,6 +48,6 @@ class ForumThreadsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def forum_thread_params
-      params.require(:forum_thread).permit(:title, :content, :id)
+      params.require(:forum_thread).permit(:title, :content, :id, :user_id, :forum_category_id)
     end
 end

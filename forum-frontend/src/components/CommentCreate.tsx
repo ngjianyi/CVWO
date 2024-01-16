@@ -1,4 +1,3 @@
-import Thread from "../types/Thread";
 import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
@@ -10,17 +9,18 @@ import Container from "@mui/material/Container";
 // import { ThemeProvider } from "@mui/material/styles";
 
 type Props = {
-    thread: Thread;
+    updatecomments: () => void;
+    thread_id: number;
 };
 
 type Body = {
     content: string;
-    author: string;
     forum_thread_id: number;
     user_id: number;
 };
 
-const CommentForm: React.FC<Props> = ({ thread }) => {
+// const CommentForm: React.FC<Props> = ({ thread }) => {
+const CommentForm: React.FC<Props> = ({ updatecomments, thread_id }) => {
     // const navigate = useNavigate();
     const [comment, setComment] = useState("");
 
@@ -33,14 +33,11 @@ const CommentForm: React.FC<Props> = ({ thread }) => {
         const url = "http://localhost:4000/forum_comments";
         const body: Body = {
             content: stripHtmlEntities(comment),
-            author: "user2", // TO UPDATE
-            forum_thread_id: parseInt(`${thread.id}`),
-            user_id: 2, // TO UPDATE
+            forum_thread_id: parseInt(`${thread_id}`),
+            user_id: 6, // TO UPDATE
         };
-        // const token = document.querySelector('meta[name="csrf-token"]').content;
         const header = {
             headers: {
-                // "X-CSRF-Token": token,
                 "Content-Type": "application/json",
             },
         };
@@ -53,6 +50,7 @@ const CommentForm: React.FC<Props> = ({ thread }) => {
             });
 
         setComment("");
+        updatecomments();
     };
 
     return (
@@ -80,7 +78,7 @@ const CommentForm: React.FC<Props> = ({ thread }) => {
                         onChange={(event) => setComment(event.target.value)}
                     />
                     <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        Add comment
+                        {"Add comment"}
                     </Button>
                 </Box>
             </Box>
