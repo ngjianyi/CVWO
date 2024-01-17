@@ -1,16 +1,19 @@
+// import Thread from "../types/Thread";
 import Category from "../types/Category";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import {
+    Button,
+    CssBaseline,
+    TextField,
+    Box,
+    Container,
+    InputLabel,
+    MenuItem,
+    FormControl,
+    Select,
+} from "@mui/material";
 // import { ThemeProvider } from "@mui/material/styles";
 
 type Body = {
@@ -20,12 +23,15 @@ type Body = {
     forum_category_id: number;
 };
 
-const ThreadCreate: React.FC = () => {
+const ThreadUpdate: React.FC = () => {
+    const location = useLocation(); // ADD TYPE
+    const { thread } = location.state;
     const navigate = useNavigate();
-    const [title, setTitle] = useState<string>("");
-    const [content, setContent] = useState<string>("");
+
+    const [title, setTitle] = useState<string>(thread.title);
+    const [content, setContent] = useState<string>(thread.content);
     const [categoryoptions, setCategoryOptions] = useState<never[]>([]);
-    const [selectedcategory, setSelectedCategory] = useState<string>("");
+    const [selectedcategory, setSelectedCategory] = useState<string>(String(thread.forum_category_id));
 
     useEffect(() => {
         const url = "http://localhost:4000/forum_categories";
@@ -51,7 +57,7 @@ const ThreadCreate: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const url = "http://localhost:4000/forum_threads";
+        const url = `http://localhost:4000/forum_threads/${thread.id}`;
         const body: Body = {
             title: stripHtmlEntities(title),
             content: stripHtmlEntities(content),
@@ -65,7 +71,7 @@ const ThreadCreate: React.FC = () => {
         };
 
         await axios
-            .post<Body>(url, body, header)
+            .patch<Body>(url, body, header)
             .then((res) => console.log(res))
             .catch((error: Error | AxiosError) => {
                 console.log(error);
@@ -112,7 +118,7 @@ const ThreadCreate: React.FC = () => {
                         rows={5}
                         onChange={(event) => setContent(event.target.value)}
                     />
-                    <FormControl required variant="filled" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl required variant="filled" sx={{ m: 1, minWidth: 40 }}>
                         <InputLabel id="category-label">Category</InputLabel>
                         <Select
                             labelId="category-label"
@@ -124,7 +130,7 @@ const ThreadCreate: React.FC = () => {
                         </Select>
                     </FormControl>
                     <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        Create new thread!
+                        Update existing thread!
                     </Button>
                 </Box>
             </Box>
@@ -133,4 +139,4 @@ const ThreadCreate: React.FC = () => {
     );
 };
 
-export default ThreadCreate;
+export default ThreadUpdate;

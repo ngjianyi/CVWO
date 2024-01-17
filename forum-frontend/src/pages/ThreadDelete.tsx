@@ -1,77 +1,58 @@
-// import Category from "../types/Category";
-// import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import axios, { AxiosError } from "axios";
-// import { CssBaseline, Box, Container, Button, Typography } from "@mui/material";
-// // import { ThemeProvider } from "@mui/material/styles";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import { CssBaseline, Box, Container, Button, Typography } from "@mui/material";
+// import { ThemeProvider } from "@mui/material/styles";
 
-// type Body = {
-//     forum_thread_id: number;
-// };
+const ThreadDelete: React.FC = () => {
+    const location = useLocation();
+    const { thread } = location.state;
+    const navigate = useNavigate();
 
-// const ThreadForm: React.FC = () => {
-//     const navigate = useNavigate();
-//     const [title, setTitle] = useState("");
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const url = `http://localhost:4000/forum_threads/${thread.id}`;
+        const header = {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
 
-//     useEffect(() => {
-//         const url = "http://localhost:4000/forum_categories";
-//         axios
-//             .get(url)
-//             .then((response) => {
-//                 setTitle(response.data.forum_thread.title);
-//             })
-//             .catch((error: Error | AxiosError) => {
-//                 console.log(error);
-//             });
-//     }, []);
+        await axios
+            .delete(url, header)
+            .then((res) => console.log(res))
+            .catch((error: Error | AxiosError) => {
+                console.log(error);
+            });
 
-//     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-//         event.preventDefault();
-//         const url = "http://localhost:4000/forum_threads";
-//         const body: Body = {
-//             forum_thread_id: 0,
-//         };
-//         const header = {
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//         };
+        navigate("/");
+    };
 
-//         await axios
-//             .post<Body>(url, body, header)
-//             .then((res) => console.log(res))
-//             .catch((error: Error | AxiosError) => {
-//                 console.log(error);
-//             });
+    return (
+        // <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+                sx={{
+                    marginTop: 5,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    mt: 2,
+                }}
+            >
+                <Typography variant="h6" color="textPrimary" component="h6">
+                    {"Are you sure you want to delete the thread: " + thread.title}
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate>
+                    <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                        {"Delete thread!"}
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
+        // </ThemeProvider>
+    );
+};
 
-//         navigate("/");
-//     };
-
-//     return (
-//         // <ThemeProvider theme={theme}>
-//         <Container component="main" maxWidth="xs">
-//             <CssBaseline />
-//             <Typography variant="body2" color="textPrimary" component="p">
-//                 {"Are you sure you want to delete the thread: "}
-//             </Typography>
-//             <Box
-//                 sx={{
-//                     marginTop: 5,
-//                     display: "flex",
-//                     flexDirection: "column",
-//                     alignItems: "center",
-//                     mt: 1,
-//                 }}
-//             >
-//                 <Box component="form" onSubmit={handleSubmit} noValidate>
-//                     <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-//                         {"Delete thread!"}
-//                     </Button>
-//                 </Box>
-//             </Box>
-//         </Container>
-//         // </ThemeProvider>
-//     );
-// };
-
-// export default ThreadForm;
+export default ThreadDelete;

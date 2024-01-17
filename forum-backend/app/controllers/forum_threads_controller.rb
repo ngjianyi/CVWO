@@ -4,7 +4,7 @@ class ForumThreadsController < ApplicationController
   # GET /forum_threads
   def index
     @forum_threads = ForumThread.all.order(created_at: :desc)
-    @full_threads = @forum_threads.map{ |thread| {forum_thread: thread, author: thread.user.username, forum_category: thread.forum_category.name}}
+    @full_threads = @forum_threads.map{ |thread| {thread: thread, author: thread.user.username, category: thread.forum_category.name}}
     render json: @full_threads
   end
 
@@ -12,7 +12,7 @@ class ForumThreadsController < ApplicationController
   def show
     author = @forum_thread.user.username
     forum_category = @forum_thread.forum_category.name
-    render json: {forum_thread: @forum_thread, author: author, forum_category: forum_category}
+    render json: {thread: @forum_thread, author: author, category: forum_category}
   end
 
   # POST /forum_threads

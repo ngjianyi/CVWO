@@ -5,7 +5,7 @@ import { Button, Card, CardContent, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 type Props = {
-    thread: { forum_thread: Thread; author: string; forum_category: string };
+    full_thread: { thread: Thread; author: string; category: string };
     indivthread: boolean;
 };
 
@@ -23,26 +23,26 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const ThreadItem: React.FC<Props> = ({ thread, indivthread }) => {
+const ThreadItem: React.FC<Props> = ({ full_thread, indivthread }) => {
     const classes = useStyles();
 
     return (
         <Card className={classes.threadCard}>
             <CardContent>
                 <Typography variant="h5" component="h5" className={classes.threadBody}>
-                    {thread.forum_thread.title}
+                    {full_thread.thread.title}
                 </Typography>
                 <Typography variant="body2" component="p" className={classes.threadBody}>
-                    {"Under: " + thread.forum_category}
+                    {"Under: " + full_thread.category}
                 </Typography>
                 {indivthread && (
                     <Typography variant="body2" component="p" className={classes.metadata}>
-                        {thread.forum_thread.content}
+                        {full_thread.thread.content}
                     </Typography>
                 )}
-                {indivthread && <Typography component="p">{`Posted by: ${thread.author}`}</Typography>}
+                {indivthread && <Typography component="p">{`Posted by: ${full_thread.author}`}</Typography>}
                 {!indivthread && (
-                    <Link to={`/thread/${thread.forum_thread.id}`}>
+                    <Link to={`/thread/${full_thread.thread.id}`}>
                         <Button variant="contained" color="secondary">
                             {"View comments"}
                         </Button>

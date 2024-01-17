@@ -8,7 +8,7 @@ const Home: React.FC = () => {
         <>
             <h3>{"Welcome to my forum!"}</h3>
             <br />
-            <Link to={"/threadcreate"}>
+            <Link to={"/thread/create"}>
                 <Button variant="outlined" color="primary">
                     Create a new thread!
                 </Button>

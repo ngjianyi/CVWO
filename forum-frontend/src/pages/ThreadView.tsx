@@ -5,17 +5,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Box } from "@mui/material";
 
+type FullThread = {
+    thread: {
+        id: number;
+        title: string;
+        content: string;
+    };
+    author: string;
+    category: string;
+};
+
 const ThreadView: React.FC = () => {
     const params = useParams();
     const navigate = useNavigate();
-    const [thread, setThread] = useState({
-        forum_thread: {
+    const [full_thread, setFullThread] = useState<FullThread>({
+        thread: {
             id: 0,
             title: "",
             content: "",
         },
         author: "",
-        forum_category: "",
+        category: "",
     });
 
     useEffect(() => {
@@ -23,28 +33,37 @@ const ThreadView: React.FC = () => {
         axios
             .get(url)
             .then((response) => {
-                setThread(response.data);
+                setFullThread(response.data);
             })
             .catch(() => navigate("/hmm"));
     }, [params.id]);
 
-    const thread_view: JSX.Element = <ThreadItem thread={thread} indivthread={true} key={thread.forum_thread.id} />;
+    const thread_view: JSX.Element = (
+        <ThreadItem full_thread={full_thread} indivthread={true} key={full_thread.thread.id} />
+    );
 
     return (
         <div style={{ width: "30vw", margin: "auto" }}>
             <div>{thread_view}</div>
 
-            <CommentList thread_id={thread.forum_thread.id} />
+            <CommentList thread_id={full_thread.thread.id} />
 
             <Box sx={{ "& button": { m: 1 } }}>
-                <Link to="/">
+                <Link to="/thread/update" state={{ thread: full_thread.thread }}>
                     <Button variant="contained" color="secondary">
-                        {"Back to threads"}
+                        Update thread
                     </Button>
                 </Link>
-                <Button variant="contained" color="secondary">
-                    {"Delete thread"}
-                </Button>
+                <Link to="/thread/delete" state={{ thread: full_thread.thread }}>
+                    <Button variant="contained" color="secondary">
+                        Delete thread
+                    </Button>
+                </Link>
+                <Link to="/">
+                    <Button variant="contained" color="primary">
+                        Back to threads
+                    </Button>
+                </Link>
             </Box>
         </div>
     );

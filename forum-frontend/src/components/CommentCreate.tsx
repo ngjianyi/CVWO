@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
+import { Box, Button, Container, CssBaseline, TextField } from "@mui/material";
 // import { ThemeProvider } from "@mui/material/styles";
 
 type Props = {
-    updatecomments: () => void;
+    updateComments: () => void;
     thread_id: number;
 };
 
@@ -19,12 +14,10 @@ type Body = {
     user_id: number;
 };
 
-// const CommentForm: React.FC<Props> = ({ thread }) => {
-const CommentForm: React.FC<Props> = ({ updatecomments, thread_id }) => {
-    // const navigate = useNavigate();
-    const [comment, setComment] = useState("");
+const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
+    const [comment, setComment] = useState<string>("");
 
-    const stripHtmlEntities = (str: string) => {
+    const stripHtmlEntities = (str: string): string => {
         return String(str).replace(/\n/g, "<br> <br>").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     };
 
@@ -50,7 +43,7 @@ const CommentForm: React.FC<Props> = ({ updatecomments, thread_id }) => {
             });
 
         setComment("");
-        updatecomments();
+        updateComments();
     };
 
     return (

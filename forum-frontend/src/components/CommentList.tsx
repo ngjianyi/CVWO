@@ -1,5 +1,5 @@
 import CommentItem from "./CommentItem";
-import CommentForm from "./CommentCreate";
+import CommentCreate from "./CommentCreate";
 import Comment from "../types/Comment";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -16,7 +16,7 @@ type full_comment = {
 
 const CommentList: React.FC<Props> = ({ thread_id }) => {
     const params = useParams();
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState<never[]>([]);
 
     const updateComments = () => {
         const url = `http://localhost:4000/thread_comments/${params.id}`;
@@ -36,13 +36,13 @@ const CommentList: React.FC<Props> = ({ thread_id }) => {
 
     const no_comments: JSX.Element = <p>Be the first to comment!</p>;
     const all_comments: JSX.Element[] = comments.map((full_comment: full_comment) => (
-        <CommentItem full_comment={full_comment} key={full_comment.comment.id} />
+        <CommentItem full_comment={full_comment} updateComments={updateComments} key={full_comment.comment.id} />
     ));
 
     return (
         <>
             <ul>{comments.length > 0 ? all_comments : no_comments}</ul>
-            <CommentForm updatecomments={updateComments} thread_id={thread_id} />
+            <CommentCreate updateComments={updateComments} thread_id={thread_id} />
         </>
     );
 };
