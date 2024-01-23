@@ -1,5 +1,6 @@
 import CommentItem from "./CommentItem";
 import CommentCreate from "./CommentCreate";
+import { getWithExpiry } from "../helpers/LocalStorage";
 import Comment from "../types/Comment";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -7,6 +8,7 @@ import axios, { AxiosError } from "axios";
 
 type Props = {
     thread_id: number;
+    filter_url: string;
 };
 
 type full_comment = {
@@ -14,14 +16,14 @@ type full_comment = {
     author: string;
 };
 
-const CommentList: React.FC<Props> = ({ thread_id }) => {
+const CommentList: React.FC<Props> = ({ thread_id, filter_url }) => {
     const params = useParams();
+    const stored_username = getWithExpiry("username");
     const [comments, setComments] = useState<never[]>([]);
 
-    const updateComments = () => {
-        const url = `http://localhost:4000/thread_comments/${params.id}`;
-        axios
-            .get(url)
+    const updateComments = async () => {
+        await axios
+            .get(filter_url)
             .then((response) => {
                 setComments(response.data);
             })
@@ -42,7 +44,11 @@ const CommentList: React.FC<Props> = ({ thread_id }) => {
     return (
         <>
             <ul>{comments.length > 0 ? all_comments : no_comments}</ul>
-            <CommentCreate updateComments={updateComments} thread_id={thread_id} />
+            {stored_username ? (
+                <CommentCreate updateComments={updateComments} thread_id={thread_id} />
+            ) : (
+                <p>Log in to post a comment!</p>
+            )}
         </>
     );
 };

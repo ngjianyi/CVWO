@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show update destroy ]
+  rescue_from ActiveRecord::RecordInvalid, with: :handle_invalid_record
 
   # GET /users
   def index
@@ -46,6 +47,10 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:username)
+      params.permit(:username, :password, :password_confirmation)
+    end
+
+    def handle_invalid_record(e)
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
     end
 end

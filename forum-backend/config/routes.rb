@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
-  resources :forum_categories
-  resources :forum_comments
-  resources :users
+  resources :users, only: [:create]
+  resources :forum_categories, only: [:index]
   resources :forum_threads
-  post "/forum_threads", to: "forum_threads#create"
-  get "/thread_comments/:forum_thread_id", to: "forum_comments#thread_comments"
-  post "/forum_comments", to: "forum_comments#create"
+  resources :forum_comments
+
+  post "/login", to: "auth#login"
+  get "/logout", to: "auth#logout"
+  get "threads_filter_category/:forum_category_id", to: "forum_threads#filter_category"
+  get "/comments_filter_thread/:forum_thread_id", to: "forum_comments#filter_thread"
+  get "/threads_filter_user/:username", to: "forum_threads#filter_user"
+  get "/comments_filter_user/:username", to: "forum_comments#filter_user"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -5,23 +5,30 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+type Props = {
+    filter_url: string | null;
+};
+
 type full_thread = { thread: Thread; author: string; category: string };
 
-const BasicThreadList: React.FC = () => {
+const ThreadList: React.FC<Props> = ({ filter_url }) => {
     const navigate = useNavigate();
     const [threads, setThreads] = useState<never[]>([]);
 
+    let url = "/forum_threads";
+    if (filter_url) {
+        url = filter_url;
+    }
     useEffect(() => {
-        const url = "http://localhost:4000/forum_threads";
         axios
             .get(url)
             .then((response) => {
                 setThreads(response.data);
             })
             .catch(() => navigate("/"));
-    }, []);
+    }, [filter_url]);
 
-    const no_threads: JSX.Element = <h3>{"Sign in the add a thread!"}</h3>;
+    const no_threads: JSX.Element = <h3>No threads available</h3>;
     const all_threads: JSX.Element[] = threads.map((full_thread: full_thread) => (
         <ThreadItem full_thread={full_thread} indivthread={false} key={full_thread.thread.id} />
     ));
@@ -33,4 +40,4 @@ const BasicThreadList: React.FC = () => {
     );
 };
 
-export default BasicThreadList;
+export default ThreadList;

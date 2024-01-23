@@ -1,4 +1,3 @@
-// import Thread from "../types/Thread";
 import Category from "../types/Category";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -13,13 +12,13 @@ import {
     MenuItem,
     FormControl,
     Select,
+    Alert,
 } from "@mui/material";
 // import { ThemeProvider } from "@mui/material/styles";
 
 type Body = {
     title: string;
     content: string;
-    user_id: number;
     forum_category_id: number;
 };
 
@@ -28,13 +27,14 @@ const ThreadUpdate: React.FC = () => {
     const { thread } = location.state;
     const navigate = useNavigate();
 
+    const [alert, setAlert] = useState<boolean>(false);
     const [title, setTitle] = useState<string>(thread.title);
     const [content, setContent] = useState<string>(thread.content);
     const [categoryoptions, setCategoryOptions] = useState<never[]>([]);
     const [selectedcategory, setSelectedCategory] = useState<string>(String(thread.forum_category_id));
 
     useEffect(() => {
-        const url = "http://localhost:4000/forum_categories";
+        const url = "/forum_categories";
         axios
             .get(url)
             .then((response) => {
@@ -51,33 +51,25 @@ const ThreadUpdate: React.FC = () => {
         </MenuItem>
     ));
 
-    const stripHtmlEntities = (str: string): string => {
-        return String(str).replace(/\n/g, "<br> <br>").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    };
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const url = `http://localhost:4000/forum_threads/${thread.id}`;
+        const url = `/forum_threads/${thread.id}`;
         const body: Body = {
-            title: stripHtmlEntities(title),
-            content: stripHtmlEntities(content),
-            user_id: 6, // TO UPDATE
+            title: title,
+            content: content,
             forum_category_id: parseInt(selectedcategory),
-        };
-        const header = {
-            headers: {
-                "Content-Type": "application/json",
-            },
         };
 
         await axios
-            .patch<Body>(url, body, header)
-            .then((res) => console.log(res))
+            .patch<Body>(url, body)
+            .then((res) => {
+                console.log(res);
+                navigate("/");
+            })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
+                setAlert(true);
             });
-
-        navigate("/");
     };
 
     return (
@@ -93,6 +85,7 @@ const ThreadUpdate: React.FC = () => {
                     "& .MuiTextField-root": { m: 1, width: "50ch" },
                 }}
             >
+                {alert && <Alert severity="error">You are not authorised to update this thread</Alert>}
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"

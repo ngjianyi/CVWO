@@ -1,8 +1,8 @@
+import { getWithExpiry } from "../helpers/LocalStorage";
 import Comment from "../types/Comment";
 import React, { useState, MouseEvent } from "react";
 import axios, { AxiosError } from "axios";
-import { Box, Card, CardContent, TextField, Typography, Button } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box, Card, CardContent, TextField, Typography, Button, Alert } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,62 +18,9 @@ type Body = {
     content: string;
 };
 
-// import { styled, alpha } from "@mui/material/styles";
-// import Menu, { MenuProps } from "@mui/material/Menu";
-
-// const StyledMenu = styled((props: MenuProps) => (
-//     <Menu
-//         elevation={0}
-//         anchorOrigin={{
-//             vertical: "bottom",
-//             horizontal: "right",
-//         }}
-//         transformOrigin={{
-//             vertical: "top",
-//             horizontal: "right",
-//         }}
-//         {...props}
-//     />
-// ))(({ theme }) => ({
-//     "& .MuiPaper-root": {
-//         borderRadius: 6,
-//         marginTop: theme.spacing(1),
-//         minWidth: 180,
-//         color: theme.palette.mode === "light" ? "rgb(55, 65, 81)" : theme.palette.grey[300],
-//         boxShadow:
-//             "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-//         "& .MuiMenu-list": {
-//             padding: "4px 0",
-//         },
-//         "& .MuiMenuItem-root": {
-//             "& .MuiSvgIcon-root": {
-//                 fontSize: 18,
-//                 color: theme.palette.text.secondary,
-//                 marginRight: theme.spacing(1.5),
-//             },
-//             "&:active": {
-//                 backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-//             },
-//         },
-//     },
-// }));
-
-const useStyles = makeStyles(() => ({
-    commentBody: {
-        fontSize: 16,
-        whiteSpace: "pre-wrap",
-        paddingBottom: "1em",
-    },
-    commentCard: {
-        marginBottom: "1em",
-    },
-    metadata: {
-        fontSize: 14,
-    },
-}));
-
 const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
-    const classes = useStyles();
+    const stored_username = getWithExpiry("username");
+    const [alert, setAlert] = useState<boolean>(false);
     const [editable, setEditable] = useState<boolean>(false);
     const [content, setContent] = useState<string>(full_comment.comment.content);
 
@@ -86,47 +33,52 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
         setAnchorEl(null);
     };
 
-    const url = `http://localhost:4000/forum_comments/${full_comment.comment.id}`;
-    const header = {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
-
     const handleEdit = () => {
         setAnchorEl(null);
         setEditable(!editable);
     };
 
-    const handleSubmit = async () => {
+    const url = `/forum_comments/${full_comment.comment.id}`;
+
+    const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         const body: Body = {
             content: content,
         };
         await axios
-            .patch(url, body, header)
-            .then((res) => console.log(res))
+            .patch(url, body)
+            .then((res) => {
+                console.log(res);
+                updateComments();
+            })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
+                setAlert(true);
+                setEditable(false);
+                handleClose();
             });
-
-        updateComments();
     };
 
     const handleDelete = async () => {
         await axios
-            .delete(url, header)
-            .then((res) => console.log(res))
+            .delete(url)
+            .then((res) => {
+                console.log(res);
+                updateComments();
+            })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
+                setAlert(true);
+                handleClose();
             });
-
-        updateComments();
     };
 
     return (
-        <Card className={classes.commentCard}>
+        <Card>
+            {alert && <Alert severity="error">You are not authorised to perform this action</Alert>}
+
             {editable ? (
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleUpdate} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         variant="filled"
@@ -145,16 +97,16 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
                 </Box>
             ) : (
                 <CardContent>
-                    <Typography variant="body2" color="textPrimary" className={classes.commentBody} component="p">
+                    <Typography variant="body2" color="textPrimary" component="p">
                         {full_comment.comment.content}
                     </Typography>
-                    <Typography color="textSecondary" className={classes.metadata} gutterBottom>
+                    <Typography color="textSecondary" gutterBottom>
                         {"Posted by " + full_comment.author}
                     </Typography>
                 </CardContent>
             )}
 
-            {!editable && (
+            {!editable && stored_username === full_comment.author && (
                 <Button
                     id="more-actions-button"
                     aria-controls={open ? "more-actions-menu" : undefined}

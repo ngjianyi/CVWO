@@ -15,11 +15,15 @@ ForumComment.destroy_all
 
 user1 = User.create({
     username: "user 1",
-    password: "user1"
+    # password: "user1",
+    # password_confirmation: "user1"
+    password_digest: "user1"
 })
 user2 = User.create({
     username: "user 2",
-    password: "user2"
+    password: "user2",
+    password_confirmation: "user2"
+    # password_digest: "user2"
 })
 
 category1 = ForumCategory.create({
@@ -42,32 +46,27 @@ thread1 = ForumThread.create({
     title: "Thread 1",
     content: "Thread 1 stuff",
     user_id: user2.id,
-    author: user2.username,
     forum_category_id: category3.id
 })
 thread2 = ForumThread.create({
     title: "Thread 2",
     content: "Thread 2 stuff",
     user_id: user1.id,
-    author: user1.username,
     forum_category_id: category4.id
 })
 
-ForumComment.create!([{
+ForumComment.create([{
     content: "Comment 1",
-    author: user1.username,
     forum_thread_id: thread1.id,
     user_id: user1.id
 }, 
 {
     content: "Comment 2",
-    author: user2.username,
     forum_thread_id: thread1.id,
     user_id: user2.id
 }, 
 {
     content: "Comment 3",
-    author: user1.username,
     forum_thread_id: thread2.id,
     user_id: user1.id
 }])

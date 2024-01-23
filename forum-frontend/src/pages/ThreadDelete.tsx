@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import { CssBaseline, Box, Container, Button, Typography } from "@mui/material";
+import { CssBaseline, Box, Container, Button, Typography, Alert } from "@mui/material";
 // import { ThemeProvider } from "@mui/material/styles";
 
 const ThreadDelete: React.FC = () => {
@@ -9,23 +9,21 @@ const ThreadDelete: React.FC = () => {
     const { thread } = location.state;
     const navigate = useNavigate();
 
+    const [alert, setAlert] = useState<boolean>(false);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const url = `http://localhost:4000/forum_threads/${thread.id}`;
-        const header = {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
 
         await axios
-            .delete(url, header)
-            .then((res) => console.log(res))
+            .delete(`/forum_threads/${thread.id}`)
+            .then((res) => {
+                console.log(res);
+                navigate("/");
+            })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
+                setAlert(true);
             });
-
-        navigate("/");
     };
 
     return (
@@ -41,12 +39,13 @@ const ThreadDelete: React.FC = () => {
                     mt: 2,
                 }}
             >
+                {alert && <Alert severity="error">You are not authorised to delete this thread</Alert>}
                 <Typography variant="h6" color="textPrimary" component="h6">
                     {"Are you sure you want to delete the thread: " + thread.title}
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        {"Delete thread!"}
+                        Delete thread!
                     </Button>
                 </Box>
             </Box>

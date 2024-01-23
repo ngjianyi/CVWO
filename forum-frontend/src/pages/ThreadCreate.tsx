@@ -10,27 +10,41 @@ import Container from "@mui/material/Container";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import { Alert } from "@mui/material";
+// import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Select from "@mui/material/Select";
 // import { ThemeProvider } from "@mui/material/styles";
 
-type Body = {
+type FormData = {
     title: string;
     content: string;
-    user_id: number;
-    forum_category_id: number;
+    // forum_category_id: number;
 };
 
 const ThreadCreate: React.FC = () => {
     const navigate = useNavigate();
-    const [title, setTitle] = useState<string>("");
-    const [content, setContent] = useState<string>("");
+    // const [title, setTitle] = useState<string>("");
+    // const [content, setContent] = useState<string>("");
+    const [alert, setAlert] = useState<boolean>(false);
     const [categoryoptions, setCategoryOptions] = useState<never[]>([]);
     const [selectedcategory, setSelectedCategory] = useState<string>("");
 
+    const [form_data, setFormData] = useState<FormData>({
+        title: "",
+        content: "",
+        // forum_category_id: 0,
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({
+            ...form_data,
+            [event.target.name]: event.target.value,
+        });
+    };
+
     useEffect(() => {
-        const url = "http://localhost:4000/forum_categories";
         axios
-            .get(url)
+            .get("/forum_categories")
             .then((response) => {
                 setCategoryOptions(response.data);
             })
@@ -45,33 +59,24 @@ const ThreadCreate: React.FC = () => {
         </MenuItem>
     ));
 
-    const stripHtmlEntities = (str: string): string => {
-        return String(str).replace(/\n/g, "<br> <br>").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    };
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const url = "http://localhost:4000/forum_threads";
-        const body: Body = {
-            title: stripHtmlEntities(title),
-            content: stripHtmlEntities(content),
-            user_id: 6, // TO UPDATE
-            forum_category_id: parseInt(selectedcategory),
-        };
-        const header = {
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const body = {
+            title: form_data.title,
+            content: form_data.content,
+            forum_category_id: selectedcategory,
         };
 
         await axios
-            .post<Body>(url, body, header)
-            .then((res) => console.log(res))
+            .post<Body>("/forum_threads", body)
+            .then((res) => {
+                console.log(res);
+                navigate("/");
+            })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
+                setAlert(true);
             });
-
-        navigate("/");
     };
 
     return (
@@ -87,6 +92,7 @@ const ThreadCreate: React.FC = () => {
                     "& .MuiTextField-root": { m: 1, width: "50ch" },
                 }}
             >
+                {alert && <Alert severity="error">Please fill up all the information</Alert>}
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
@@ -96,8 +102,8 @@ const ThreadCreate: React.FC = () => {
                         id="title"
                         label="Title"
                         name="title"
-                        value={title}
-                        onChange={(event) => setTitle(event.target.value)}
+                        value={form_data.title}
+                        onChange={handleChange}
                     />
                     <TextField
                         margin="normal"
@@ -107,16 +113,17 @@ const ThreadCreate: React.FC = () => {
                         id="content"
                         label="Content"
                         name="content"
-                        value={content}
+                        value={form_data.content}
                         multiline
                         rows={5}
-                        onChange={(event) => setContent(event.target.value)}
+                        onChange={handleChange}
                     />
                     <FormControl required variant="filled" sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel id="category-label">Category</InputLabel>
                         <Select
                             labelId="category-label"
-                            id="category"
+                            id="forum_category_id"
+                            name="forum_category_id"
                             value={selectedcategory}
                             onChange={(event) => setSelectedCategory(event.target.value)}
                         >

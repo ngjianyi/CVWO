@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
-import { Box, Button, Container, CssBaseline, TextField } from "@mui/material";
+import { Box, Button, Container, CssBaseline, TextField, Alert } from "@mui/material";
 // import { ThemeProvider } from "@mui/material/styles";
 
 type Props = {
@@ -11,39 +11,31 @@ type Props = {
 type Body = {
     content: string;
     forum_thread_id: number;
-    user_id: number;
 };
 
 const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
-    const [comment, setComment] = useState<string>("");
-
-    const stripHtmlEntities = (str: string): string => {
-        return String(str).replace(/\n/g, "<br> <br>").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    };
+    const [alert, setAlert] = useState<boolean>(false);
+    const [comment, setComment] = useState("");
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
-        const url = "http://localhost:4000/forum_comments";
+        const url = "/forum_comments";
         const body: Body = {
-            content: stripHtmlEntities(comment),
+            content: comment,
             forum_thread_id: parseInt(`${thread_id}`),
-            user_id: 6, // TO UPDATE
-        };
-        const header = {
-            headers: {
-                "Content-Type": "application/json",
-            },
         };
 
         await axios
-            .post<Body>(url, body, header)
-            .then((res) => console.log(res))
+            .post<Body>(url, body)
+            .then((res) => {
+                console.log(res);
+                setComment("");
+                updateComments();
+            })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
+                setAlert(true);
             });
-
-        setComment("");
-        updateComments();
     };
 
     return (
@@ -58,6 +50,7 @@ const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
                     alignItems: "center",
                 }}
             >
+                {alert && <Alert severity="error">Please log in to post a comment</Alert>}
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
@@ -71,7 +64,7 @@ const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
                         onChange={(event) => setComment(event.target.value)}
                     />
                     <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        {"Add comment"}
+                        Add comment
                     </Button>
                 </Box>
             </Box>
