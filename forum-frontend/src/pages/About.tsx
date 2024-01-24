@@ -2,20 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
 
-const ErrorPage: React.FC = () => {
+const About: React.FC = () => {
     return (
         <Container>
             <Typography variant="h4" component="h4">
-                It seems the page you are looking for does not exist...
+                {'Satoru (さとる, サトル) is a Japanese verb meaning "to know" or "understand"'}
             </Typography>
-            <br />
             <Link to={"/"}>
                 <Button variant="contained" color="primary">
-                    Back to safety!
+                    I understand now
                 </Button>
             </Link>
         </Container>
     );
 };
 
-export default ErrorPage;
+export default About;

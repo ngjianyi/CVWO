@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -13,7 +12,6 @@ import FormControl from "@mui/material/FormControl";
 import { Alert } from "@mui/material";
 // import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Select from "@mui/material/Select";
-// import { ThemeProvider } from "@mui/material/styles";
 
 type FormData = {
     title: string;
@@ -80,20 +78,18 @@ const ThreadCreate: React.FC = () => {
     };
 
     return (
-        // <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
             <Box
-                sx={{
-                    marginTop: 5,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    "& .MuiTextField-root": { m: 1, width: "50ch" },
-                }}
+            // sx={{
+            //     marginTop: 5,
+            //     display: "flex",
+            //     flexDirection: "column",
+            //     alignItems: "center",
+            //     "& .MuiTextField-root": { m: 1, width: "50ch" },
+            // }}
             >
                 {alert && <Alert severity="error">Please fill up all the information</Alert>}
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} noValidate>
                     <TextField
                         margin="normal"
                         variant="filled"
@@ -136,7 +132,6 @@ const ThreadCreate: React.FC = () => {
                 </Box>
             </Box>
         </Container>
-        // </ThemeProvider>
     );
 };
 

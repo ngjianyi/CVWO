@@ -1,18 +1,14 @@
 import { getWithExpiry } from "../helpers/LocalStorage";
+import Thread from "../types/Thread";
 import ThreadItem from "../components/ThreadItem";
 import CommentList from "../components/CommentList";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Box } from "@mui/material";
+import { Button, Box, Container } from "@mui/material";
 
 type FullThread = {
-    thread: {
-        id: number;
-        title: string;
-        content: string;
-        user_id: number;
-    };
+    thread: Thread;
     author: string;
     category: string;
 };
@@ -27,7 +23,7 @@ const ThreadView: React.FC = () => {
             id: 0,
             title: "",
             content: "",
-            user_id: 0,
+            forum_category_id: 0,
         },
         author: "",
         category: "",
@@ -48,21 +44,21 @@ const ThreadView: React.FC = () => {
     );
 
     return (
-        <div style={{ width: "30vw", margin: "auto" }}>
-            <div>{thread_view}</div>
+        <Container>
+            <>{thread_view}</>
 
-            <CommentList thread_id={full_thread.thread.id} filter_url={`/comments_filter_thread/${params.id}`} />
+            <CommentList />
 
-            <Box sx={{ "& button": { m: 1 } }}>
+            <Box>
                 {stored_username === full_thread.author && (
                     <>
                         <Link to="/thread/update" state={{ thread: full_thread.thread }}>
-                            <Button variant="contained" color="secondary">
+                            <Button variant="contained" color="warning">
                                 Update thread
                             </Button>
                         </Link>
                         <Link to="/thread/delete" state={{ thread: full_thread.thread }}>
-                            <Button variant="contained" color="secondary">
+                            <Button variant="contained" color="error">
                                 Delete thread
                             </Button>
                         </Link>
@@ -74,7 +70,8 @@ const ThreadView: React.FC = () => {
                     </Button>
                 </Link>
             </Box>
-        </div>
+        </Container>
+        // </div>
     );
 };
 

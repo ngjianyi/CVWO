@@ -5,25 +5,26 @@ import Comment from "../types/Comment";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
+import { Typography } from "@mui/material";
 
-type Props = {
-    thread_id: number;
-    filter_url: string;
-};
+// type Props = {
+//     thread_id: number;
+// };
 
 type full_comment = {
     comment: Comment;
     author: string;
 };
 
-const CommentList: React.FC<Props> = ({ thread_id, filter_url }) => {
+const CommentList: React.FC = () => {
     const params = useParams();
     const stored_username = getWithExpiry("username");
     const [comments, setComments] = useState<never[]>([]);
 
     const updateComments = async () => {
+        const url = params.id ? `/comments_filter_thread/${params.id}` : `/comments_filter_user/${params.username}`;
         await axios
-            .get(filter_url)
+            .get(url)
             .then((response) => {
                 setComments(response.data);
             })
@@ -34,20 +35,28 @@ const CommentList: React.FC<Props> = ({ thread_id, filter_url }) => {
 
     useEffect(() => {
         updateComments();
-    }, [params.id]);
+    }, [params.id, params.username]);
 
-    const no_comments: JSX.Element = <p>Be the first to comment!</p>;
+    const no_comments: JSX.Element = <Typography>No comments available</Typography>;
     const all_comments: JSX.Element[] = comments.map((full_comment: full_comment) => (
         <CommentItem full_comment={full_comment} updateComments={updateComments} key={full_comment.comment.id} />
     ));
 
     return (
         <>
-            <ul>{comments.length > 0 ? all_comments : no_comments}</ul>
-            {stored_username ? (
-                <CommentCreate updateComments={updateComments} thread_id={thread_id} />
+            {comments.length > 0 ? all_comments : no_comments}
+            {params.id ? (
+                // Under thread page
+                <>
+                    {stored_username ? (
+                        <CommentCreate updateComments={updateComments} thread_id={parseInt(params.id)} />
+                    ) : (
+                        <Typography>Log in to post a comment!</Typography>
+                    )}
+                </>
             ) : (
-                <p>Log in to post a comment!</p>
+                // Under profile page
+                <></>
             )}
         </>
     );

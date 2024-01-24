@@ -28,7 +28,7 @@ const ThreadDelete: React.FC = () => {
 
     return (
         // <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="md">
             <CssBaseline />
             <Box
                 sx={{
@@ -40,12 +40,12 @@ const ThreadDelete: React.FC = () => {
                 }}
             >
                 {alert && <Alert severity="error">You are not authorised to delete this thread</Alert>}
-                <Typography variant="h6" color="textPrimary" component="h6">
-                    {"Are you sure you want to delete the thread: " + thread.title}
+                <Typography variant="h6" component="h6">
+                    {"Are you sure you want to delete the thread: '" + thread.title + "' ?"}
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate>
-                    <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        Delete thread!
+                    <Button type="submit" variant="contained" color="error">
+                        Delete thread
                     </Button>
                 </Box>
             </Box>

@@ -4,20 +4,21 @@ import { useNavigate, Link } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MoreIcon from "@mui/icons-material/MoreVert";
+import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MoreIcon from "@mui/icons-material/MoreVert";
 
 const Header = () => {
+    const navigate = useNavigate();
     const stored_username = getWithExpiry("username");
 
-    const navigate = useNavigate();
+    // Profile Menu
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -82,63 +83,69 @@ const Header = () => {
 
     const mobileMenuId = "primary-search-account-menu-mobile";
     const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-            }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="medium"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-                <IconButton
-                    size="medium"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <LogoutIcon />
-                </IconButton>
-                <p>Logout</p>
-            </MenuItem>
-        </Menu>
+        <>
+            <Menu
+                anchorEl={mobileMoreAnchorEl}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                id={mobileMenuId}
+                keepMounted
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                open={isMobileMenuOpen}
+                onClose={handleMobileMenuClose}
+            >
+                <Link to={`/profile/${stored_username}`}>
+                    <MenuItem onClick={handleMobileMenuOpen}>
+                        <IconButton
+                            size="small"
+                            aria-label="account of current user"
+                            aria-controls="primary-search-account-menu"
+                            aria-haspopup="true"
+                            color="secondary"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <p>Profile</p>
+                    </MenuItem>
+                </Link>
+                <MenuItem onClick={handleLogout}>
+                    <IconButton
+                        size="small"
+                        aria-label="account of current user"
+                        aria-controls="primary-search-account-menu"
+                        aria-haspopup="true"
+                        color="primary"
+                    >
+                        <LogoutIcon />
+                    </IconButton>
+                    <p>Logout</p>
+                </MenuItem>
+            </Menu>
+        </>
     );
 
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                        <Link to={"/"}>
-                            <Button variant="contained" color="secondary">
-                                SATORU
-                            </Button>
+                    <Link to={"/"}>
+                        <Box>
+                            <Typography sx={{ color: "#F2ECF8" }}>SATORU</Typography>
+                        </Box>
+                    </Link>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box>
+                        <Link to={"/about"}>
+                            <Box sx={{ mx: 1 }}>
+                                <Typography sx={{ color: "#F2ECF8" }}>About</Typography>
+                            </Box>
                         </Link>
                     </Box>
-                    <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: "none", md: "flex" } }}>
                         {stored_username ? (
                             <IconButton
@@ -148,9 +155,10 @@ const Header = () => {
                                 aria-controls={menuId}
                                 aria-haspopup="true"
                                 onClick={handleProfileMenuOpen}
-                                color="inherit"
+                                color="secondary"
                             >
                                 <AccountCircle />
+                                <Typography sx={{ color: "white", mx: 0.5 }}>{stored_username}</Typography>
                             </IconButton>
                         ) : (
                             <Link to="/login">
@@ -168,7 +176,7 @@ const Header = () => {
                                 aria-controls={mobileMenuId}
                                 aria-haspopup="true"
                                 onClick={handleMobileMenuOpen}
-                                color="inherit"
+                                color="primary"
                             >
                                 <MoreIcon />
                             </IconButton>

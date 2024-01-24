@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
-import { Box, Button, Container, CssBaseline, TextField, Alert } from "@mui/material";
-// import { ThemeProvider } from "@mui/material/styles";
+import { Box, Button, Container, TextField, Alert } from "@mui/material";
 
 type Props = {
     updateComments: () => void;
@@ -39,19 +38,10 @@ const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
     };
 
     return (
-        // <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 5,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
+        <Container>
+            <Box>
                 {alert && <Alert severity="error">Please log in to post a comment</Alert>}
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} noValidate>
                     <TextField
                         margin="normal"
                         variant="filled"
@@ -63,13 +53,12 @@ const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
                         value={comment}
                         onChange={(event) => setComment(event.target.value)}
                     />
-                    <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+                    <Button type="submit" variant="contained">
                         Add comment
                     </Button>
                 </Box>
             </Box>
         </Container>
-        // </ThemeProvider>
     );
 };
 

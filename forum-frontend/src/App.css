@@ -1,19 +1,23 @@
+a {
+    text-decoration: none;
+    color: #1f232f;
+}
+
+a:visited {
+    text-decoration: none;
+    color: "#1F232F";
+}
+
+a:hover {
+    text-decoration: underline;
+    text-decoration-color: #564a94;
+}
+
 .App {
     text-align: center;
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
+/* .App-header {
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -43,4 +47,4 @@ li {
 
 ul {
     padding-inline-start: unset;
-}
+} */

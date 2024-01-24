@@ -1,6 +1,7 @@
 import { getWithExpiry } from "../helpers/LocalStorage";
 import Comment from "../types/Comment";
 import React, { useState, MouseEvent } from "react";
+import { Link, useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import { Box, Card, CardContent, TextField, Typography, Button, Alert } from "@mui/material";
 import Menu from "@mui/material/Menu";
@@ -19,6 +20,7 @@ type Body = {
 };
 
 const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
+    const params = useParams();
     const stored_username = getWithExpiry("username");
     const [alert, setAlert] = useState<boolean>(false);
     const [editable, setEditable] = useState<boolean>(false);
@@ -50,6 +52,7 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
             .then((res) => {
                 console.log(res);
                 updateComments();
+                setEditable(false);
             })
             .catch((error: Error | AxiosError) => {
                 console.log(error);
@@ -75,68 +78,80 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
 
     return (
         <Card>
-            {alert && <Alert severity="error">You are not authorised to perform this action</Alert>}
+            {params.id ? (
+                // Under thread page
+                <>
+                    {alert && <Alert severity="error">You are not authorised to perform this action</Alert>}
+                    {editable ? (
+                        <Box component="form" onSubmit={handleUpdate} noValidate>
+                            <TextField
+                                margin="normal"
+                                variant="filled"
+                                required
+                                fullWidth
+                                id="content"
+                                label="Content"
+                                name="content"
+                                value={content}
+                                multiline
+                                onChange={(event) => setContent(event.target.value)}
+                            />
+                            <Button type="submit" variant="contained" color="primary">
+                                Update comment
+                            </Button>
+                        </Box>
+                    ) : (
+                        <CardContent>
+                            <Typography>{full_comment.comment.content}</Typography>
 
-            {editable ? (
-                <Box component="form" onSubmit={handleUpdate} noValidate sx={{ mt: 1 }}>
-                    <TextField
-                        margin="normal"
-                        variant="filled"
-                        required
-                        fullWidth
-                        id="content"
-                        label="Content"
-                        name="content"
-                        value={content}
-                        multiline
-                        onChange={(event) => setContent(event.target.value)}
-                    />
-                    <Button type="submit" variant="contained" color="primary">
-                        Update comment!
-                    </Button>
-                </Box>
+                            <Typography>
+                                By: <Link to={`/profile/${full_comment.author}`}>{full_comment.author}</Link>
+                            </Typography>
+                        </CardContent>
+                    )}
+
+                    {!editable && stored_username === full_comment.author && (
+                        <Button
+                            id="more-actions-button"
+                            aria-controls={open ? "more-actions-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            variant="text"
+                            disableElevation
+                            onClick={handleClick}
+                        >
+                            <MoreHorizIcon />
+                        </Button>
+                    )}
+                    <Menu
+                        id="more-actions-menu"
+                        MenuListProps={{
+                            "aria-labelledby": "more-actions-button",
+                        }}
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={handleEdit}>
+                            <EditIcon />
+                            Edit
+                        </MenuItem>
+                        <MenuItem onClick={handleDelete}>
+                            <DeleteIcon />
+                            Delete
+                        </MenuItem>
+                    </Menu>
+                </>
             ) : (
+                // Under profile page
+
                 <CardContent>
-                    <Typography variant="body2" color="textPrimary" component="p">
-                        {full_comment.comment.content}
-                    </Typography>
-                    <Typography color="textSecondary" gutterBottom>
-                        {"Posted by " + full_comment.author}
-                    </Typography>
+                    <Typography>{full_comment.comment.content}</Typography>
+                    <Link to={`/thread/${full_comment.comment.forum_thread_id}`}>
+                        <Button variant="contained">Go to thread</Button>
+                    </Link>
                 </CardContent>
             )}
-
-            {!editable && stored_username === full_comment.author && (
-                <Button
-                    id="more-actions-button"
-                    aria-controls={open ? "more-actions-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                    variant="contained"
-                    disableElevation
-                    onClick={handleClick}
-                >
-                    <MoreHorizIcon />
-                </Button>
-            )}
-            <Menu
-                id="more-actions-menu"
-                MenuListProps={{
-                    "aria-labelledby": "more-actions-button",
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={handleEdit} disableRipple>
-                    <EditIcon />
-                    Edit
-                </MenuItem>
-                <MenuItem onClick={handleDelete} disableRipple>
-                    <DeleteIcon />
-                    Delete
-                </MenuItem>
-            </Menu>
         </Card>
     );
 };

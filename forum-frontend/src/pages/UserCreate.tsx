@@ -8,10 +8,6 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
 
 type FormData = {
     username: string;
@@ -38,9 +34,30 @@ const UserCreate = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(form_data.password);
+        const hasLowerCase = /[a-z]/.test(form_data.password);
+        const hasNumber = /\d/.test(form_data.password);
+
         if (form_data.password !== form_data.password_confirmation) {
             setAlert(true);
             setAlertMessage("Passwords do not match");
+            return;
+        }
+        if (form_data.password.length < minLength) {
+            setAlertMessage(alert_messsage + `Password must be at least ${minLength} characters long. `);
+        }
+        if (!hasUpperCase) {
+            setAlertMessage(alert_messsage + "Password must contain at least one uppercase letter. ");
+        }
+        if (!hasLowerCase) {
+            setAlertMessage(alert_messsage + "Password must contain at least one lowercase letter. ");
+        }
+        if (!hasNumber) {
+            setAlertMessage(alert_messsage + "Password must contain at least one number. ");
+        }
+        if (alert_messsage) {
             return;
         }
 
@@ -58,62 +75,60 @@ const UserCreate = () => {
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
-                {alert && <Alert severity="error">{alert_messsage}</Alert>}
-                <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                    }}
-                >
-                    <Typography component="h1" variant="h5">
-                        Create a profile
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            value={form_data.username}
-                            onChange={handleChange}
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            value={form_data.password}
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password_confirmation"
-                            label="Retype password"
-                            type="password"
-                            id="password_confirmation"
-                            value={form_data.password_confirmation}
-                            onChange={handleChange}
-                        />
-                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                            Create profile
-                        </Button>
-                    </Box>
+        <Container component="main" maxWidth="xs">
+            {alert && <Alert severity="error">{alert_messsage}</Alert>}
+            <CssBaseline />
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <Typography component="h1" variant="h5">
+                    Create a profile
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        value={form_data.username}
+                        onChange={handleChange}
+                        autoFocus
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        value={form_data.password}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password_confirmation"
+                        label="Retype password"
+                        type="password"
+                        id="password_confirmation"
+                        value={form_data.password_confirmation}
+                        onChange={handleChange}
+                    />
+                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                        Create profile
+                    </Button>
                 </Box>
-            </Container>
-        </ThemeProvider>
+            </Box>
+        </Container>
     );
 };
 
