@@ -12,7 +12,7 @@ default: &default
 development:
   <<: *default
   # database: storage/development.sqlite3
-  database: forum_development
+  database: forum-backend
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -20,9 +20,9 @@ development:
 test:
   <<: *default
   # database: storage/test.sqlite3
-  database: forum_test
+  database: forum-backend
 
 production:
   <<: *default
   # database: storage/production.sqlite3
-  database: forum_production
+  database: forum-backend
