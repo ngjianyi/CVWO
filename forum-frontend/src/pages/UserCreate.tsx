@@ -76,14 +76,7 @@ const UserCreate: React.FC = () => {
     return (
         <Container component="main" maxWidth="xs">
             {alert && <Alert severity="error">{alert_messsage}</Alert>}
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
+            <Box>
                 <Typography component="h1" variant="h5">
                     Create a profile
                 </Typography>

@@ -5,7 +5,7 @@ class User < ApplicationRecord
     validates :username, presence: true, uniqueness: { case_sensitive: true }
     validates :password,
                confirmation: { case_sensitive: true },
-               length: { minimum: 6 },
+               length: { minimum: 8 },
                if: -> { new_record? || !password.nil? },
                format: /\A # Start of string
                     (?=.*\d) # Contains at least one number
