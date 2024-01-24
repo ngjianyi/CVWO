@@ -2,19 +2,17 @@ import Category from "../types/Category";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import {
-    Button,
-    CssBaseline,
-    TextField,
-    Box,
-    Container,
-    InputLabel,
-    MenuItem,
-    FormControl,
-    Select,
-    Alert,
-} from "@mui/material";
-// import { ThemeProvider } from "@mui/material/styles";
+
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 
 type Body = {
     title: string;
@@ -23,14 +21,15 @@ type Body = {
 };
 
 const ThreadUpdate: React.FC = () => {
-    const location = useLocation(); // ADD TYPE
+    const location = useLocation();
     const { thread } = location.state;
     const navigate = useNavigate();
 
     const [alert, setAlert] = useState<boolean>(false);
+    const [categoryoptions, setCategoryOptions] = useState<never[]>([]);
+
     const [title, setTitle] = useState<string>(thread.title);
     const [content, setContent] = useState<string>(thread.content);
-    const [categoryoptions, setCategoryOptions] = useState<never[]>([]);
     const [selectedcategory, setSelectedCategory] = useState<string>(String(thread.forum_category_id));
 
     useEffect(() => {
@@ -63,30 +62,20 @@ const ThreadUpdate: React.FC = () => {
         await axios
             .patch<Body>(url, body)
             .then((res) => {
-                console.log(res);
                 navigate("/");
+                console.log(res);
             })
             .catch((error: Error | AxiosError) => {
-                console.log(error);
                 setAlert(true);
+                console.log(error);
             });
     };
 
     return (
-        // <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 5,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    "& .MuiTextField-root": { m: 1, width: "50ch" },
-                }}
-            >
+            <Box>
                 {alert && <Alert severity="error">You are not authorised to update this thread</Alert>}
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} noValidate>
                     <TextField
                         margin="normal"
                         variant="filled"
@@ -122,13 +111,13 @@ const ThreadUpdate: React.FC = () => {
                             {all_categories}
                         </Select>
                     </FormControl>
-                    <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        Update existing thread!
+                    <Divider />
+                    <Button type="submit" variant="contained">
+                        Update thread
                     </Button>
                 </Box>
             </Box>
         </Container>
-        // </ThemeProvider>
     );
 };
 

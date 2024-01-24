@@ -1,8 +1,8 @@
 import Thread from "../types/Thread";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Card, CardContent, Typography } from "@mui/material";
-import Divider from "@mui/material/Divider";
+
+import { Box, Card, Divider, CardContent, Typography } from "@mui/material";
 
 type Props = {
     full_thread: { thread: Thread; author: string; category: string };

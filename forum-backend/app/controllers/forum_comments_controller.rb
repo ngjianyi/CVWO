@@ -14,14 +14,14 @@ class ForumCommentsController < ApplicationController
     render json: @forum_comment
   end
 
-  # GET /comment_filter_thread/1
+  # GET /comment_filter_thread/1 Filter by thread
   def filter_thread
     @comments = ForumComment.all.order(created_at: :desc).select { |comment| comment.forum_thread_id == Integer(params[:forum_thread_id]) }
     @full_comments = @comments.map{ |comment| {comment: comment, author: comment.user.username }}
     render json: @full_comments
   end
 
-  # GET /comment_filter_user/1
+  # GET /comment_filter_user/1 Filter by user
   def filter_user
     @user = User.find_by_username(params[:username])
     @comments = ForumComment.all.order(created_at: :desc).select { |comment| comment.user_id == @user[:id]  }

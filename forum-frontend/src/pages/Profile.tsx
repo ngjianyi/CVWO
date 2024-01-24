@@ -2,6 +2,7 @@ import ThreadList from "../components/ThreadList";
 import CommentList from "../components/CommentList";
 import React from "react";
 import { useParams } from "react-router-dom";
+
 import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 
 interface TabPanelProps {
@@ -10,6 +11,7 @@ interface TabPanelProps {
     value: number;
 }
 
+// Thread and comments tabs logic
 function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -29,7 +31,6 @@ function CustomTabPanel(props: TabPanelProps) {
         </div>
     );
 }
-
 function a11yProps(index: number) {
     return {
         id: `simple-tab-${index}`,
@@ -40,8 +41,8 @@ function a11yProps(index: number) {
 const Profile: React.FC = () => {
     const params = useParams();
 
+    // Tabs logic
     const [value, setValue] = React.useState(0);
-
     const handleChangetabs = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -52,7 +53,6 @@ const Profile: React.FC = () => {
     return (
         <Container>
             <Typography variant="h3">{params.username}</Typography>
-            {/* <Divider /> */}
 
             <Box sx={{ width: "100%" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

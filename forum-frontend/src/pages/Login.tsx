@@ -2,15 +2,16 @@ import { setWithExpiry } from "../helpers/LocalStorage";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
+
 import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 
-type FormData = {
+type Body = {
     username: string;
     password: string;
 };
@@ -18,31 +19,27 @@ type FormData = {
 const Login = () => {
     const navigate = useNavigate();
     const [alert, setAlert] = useState<boolean>(false);
-    const [form_data, setFormData] = useState<FormData>({
-        username: "",
-        password: "",
-    });
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({
-            ...form_data,
-            [event.target.name]: event.target.value,
-        });
-    };
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
+        const body: Body = {
+            username: username,
+            password: password,
+        };
+
         await axios
-            .post("/login", form_data)
+            .post<Body>("/login", body)
             .then((res) => {
                 setWithExpiry("username", res.data.username, 1);
-                console.log(res);
                 navigate("/");
+                console.log(res);
             })
             .catch((error: Error | AxiosError) => {
-                console.log(error);
                 setAlert(true);
+                console.log(error);
             });
     };
 
@@ -51,7 +48,7 @@ const Login = () => {
             <CssBaseline />
             <Box>
                 {alert && <Alert severity="error">Invalid username/password</Alert>}
-                <Typography component="h1" variant="h5">
+                <Typography component="h5" variant="h5">
                     Sign in
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -62,8 +59,8 @@ const Login = () => {
                         id="username"
                         label="Username"
                         name="username"
-                        value={form_data.username}
-                        onChange={handleChange}
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
                         autoFocus
                         autoComplete="username"
                     />
@@ -75,8 +72,8 @@ const Login = () => {
                         label="Password"
                         type="password"
                         id="password"
-                        value={form_data.password}
-                        onChange={handleChange}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                         autoComplete="current-password"
                     />
                     <Button type="submit" variant="contained">

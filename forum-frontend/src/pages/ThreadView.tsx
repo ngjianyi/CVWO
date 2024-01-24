@@ -5,7 +5,8 @@ import CommentList from "../components/CommentList";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Box, Container } from "@mui/material";
+
+import { Button, Box, Container, Divider } from "@mui/material";
 
 type FullThread = {
     thread: Thread;
@@ -33,8 +34,9 @@ const ThreadView: React.FC = () => {
         const url = `/forum_threads/${params.id}`;
         axios
             .get(url)
-            .then((response) => {
-                setFullThread(response.data);
+            .then((res) => {
+                setFullThread(res.data);
+                console.log(res);
             })
             .catch(() => navigate("/hmm"));
     }, [params.id]);
@@ -50,8 +52,14 @@ const ThreadView: React.FC = () => {
             <CommentList />
 
             <Box>
+                <Link to="/">
+                    <Button variant="contained" color="primary">
+                        Back to threads
+                    </Button>
+                </Link>
                 {stored_username === full_thread.author && (
                     <>
+                        <Divider />
                         <Link to="/thread/update" state={{ thread: full_thread.thread }}>
                             <Button variant="contained" color="warning">
                                 Update thread
@@ -64,14 +72,8 @@ const ThreadView: React.FC = () => {
                         </Link>
                     </>
                 )}
-                <Link to="/">
-                    <Button variant="contained" color="primary">
-                        Back to threads
-                    </Button>
-                </Link>
             </Box>
         </Container>
-        // </div>
     );
 };
 

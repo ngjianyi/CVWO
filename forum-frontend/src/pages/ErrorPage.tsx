@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 import { Button, Container, Typography } from "@mui/material";
 
 const ErrorPage: React.FC = () => {
@@ -8,7 +9,6 @@ const ErrorPage: React.FC = () => {
             <Typography variant="h4" component="h4">
                 It seems the page you are looking for does not exist...
             </Typography>
-            <br />
             <Link to={"/"}>
                 <Button variant="contained" color="primary">
                     Back to safety!

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import { CssBaseline, Box, Container, Button, Typography, Alert } from "@mui/material";
-// import { ThemeProvider } from "@mui/material/styles";
+import { Box, Container, Button, Typography, Alert } from "@mui/material";
 
 const ThreadDelete: React.FC = () => {
     const location = useLocation();
@@ -27,18 +26,8 @@ const ThreadDelete: React.FC = () => {
     };
 
     return (
-        // <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="md">
-            <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 5,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    mt: 2,
-                }}
-            >
+            <Box>
                 {alert && <Alert severity="error">You are not authorised to delete this thread</Alert>}
                 <Typography variant="h6" component="h6">
                     {"Are you sure you want to delete the thread: '" + thread.title + "' ?"}
@@ -50,7 +39,6 @@ const ThreadDelete: React.FC = () => {
                 </Box>
             </Box>
         </Container>
-        // </ThemeProvider>
     );
 };
 

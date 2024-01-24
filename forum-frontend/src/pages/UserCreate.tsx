@@ -1,83 +1,81 @@
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 
-type FormData = {
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+
+type Body = {
     username: string;
     password: string;
     password_confirmation: string;
 };
 
-const UserCreate = () => {
+const UserCreate: React.FC = () => {
     const navigate = useNavigate();
     const [alert, setAlert] = useState<boolean>(false);
     const [alert_messsage, setAlertMessage] = useState<string>("");
-    const [form_data, setFormData] = useState<FormData>({
-        username: "",
-        password: "",
-        password_confirmation: "",
-    });
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({
-            ...form_data,
-            [event.target.name]: event.target.value,
-        });
-    };
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [password_confirmation, setPasswordConfirmation] = useState<string>("");
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const minLength = 8;
-        const hasUpperCase = /[A-Z]/.test(form_data.password);
-        const hasLowerCase = /[a-z]/.test(form_data.password);
-        const hasNumber = /\d/.test(form_data.password);
-
-        if (form_data.password !== form_data.password_confirmation) {
+        if (password !== password_confirmation) {
             setAlert(true);
             setAlertMessage("Passwords do not match");
             return;
         }
-        if (form_data.password.length < minLength) {
-            setAlertMessage(alert_messsage + `Password must be at least ${minLength} characters long. `);
+
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        let errorMessage = "";
+        if (password.length < minLength) {
+            errorMessage += `Password must be at least ${minLength} characters long. \n`;
         }
         if (!hasUpperCase) {
-            setAlertMessage(alert_messsage + "Password must contain at least one uppercase letter. ");
+            errorMessage += "Password must contain at least one uppercase letter. \n";
         }
         if (!hasLowerCase) {
-            setAlertMessage(alert_messsage + "Password must contain at least one lowercase letter. ");
+            errorMessage += "Password must contain at least one lowercase letter. \n";
         }
         if (!hasNumber) {
-            setAlertMessage(alert_messsage + "Password must contain at least one number. ");
-        }
-        if (alert_messsage) {
-            return;
+            errorMessage += "Password must contain at least one number. \n";
         }
 
-        await axios
-            .post<Body>("/users", form_data)
-            .then((res) => {
-                navigate("/");
-                console.log(res);
-            })
-            .catch((error: Error | AxiosError) => {
-                setAlert(true);
-                setAlertMessage("Invalid username");
-                console.log(error);
-            });
+        if (errorMessage) {
+            setAlert(true);
+            setAlertMessage(errorMessage);
+        } else {
+            const body: Body = {
+                username: username,
+                password: password,
+                password_confirmation: password_confirmation,
+            };
+            await axios
+                .post<Body>("/users", body)
+                .then((res) => {
+                    navigate("/");
+                    console.log(res);
+                })
+                .catch((error: Error | AxiosError) => {
+                    setAlert(true);
+                    setAlertMessage("Invalid username");
+                    console.log(error);
+                });
+        }
     };
 
     return (
         <Container component="main" maxWidth="xs">
             {alert && <Alert severity="error">{alert_messsage}</Alert>}
-            <CssBaseline />
             <Box
                 sx={{
                     marginTop: 8,
@@ -97,8 +95,8 @@ const UserCreate = () => {
                         id="username"
                         label="Username"
                         name="username"
-                        value={form_data.username}
-                        onChange={handleChange}
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
                         autoFocus
                     />
                     <TextField
@@ -109,8 +107,8 @@ const UserCreate = () => {
                         label="Password"
                         type="password"
                         id="password"
-                        value={form_data.password}
-                        onChange={handleChange}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -120,8 +118,8 @@ const UserCreate = () => {
                         label="Retype password"
                         type="password"
                         id="password_confirmation"
-                        value={form_data.password_confirmation}
-                        onChange={handleChange}
+                        value={password_confirmation}
+                        onChange={(event) => setPasswordConfirmation(event.target.value)}
                     />
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Create profile

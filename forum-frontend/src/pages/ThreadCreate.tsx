@@ -2,43 +2,33 @@ import Category from "../types/Category";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import { Alert } from "@mui/material";
-// import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 
-type FormData = {
+type Body = {
     title: string;
     content: string;
-    // forum_category_id: number;
+    forum_category_id: number;
 };
 
 const ThreadCreate: React.FC = () => {
     const navigate = useNavigate();
-    // const [title, setTitle] = useState<string>("");
-    // const [content, setContent] = useState<string>("");
-    const [alert, setAlert] = useState<boolean>(false);
+
     const [categoryoptions, setCategoryOptions] = useState<never[]>([]);
+    const [alert, setAlert] = useState<boolean>(false);
+
+    const [title, setTitle] = useState<string>("");
+    const [content, setContent] = useState<string>("");
     const [selectedcategory, setSelectedCategory] = useState<string>("");
-
-    const [form_data, setFormData] = useState<FormData>({
-        title: "",
-        content: "",
-        // forum_category_id: 0,
-    });
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({
-            ...form_data,
-            [event.target.name]: event.target.value,
-        });
-    };
 
     useEffect(() => {
         axios
@@ -59,10 +49,10 @@ const ThreadCreate: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const body = {
-            title: form_data.title,
-            content: form_data.content,
-            forum_category_id: selectedcategory,
+        const body: Body = {
+            title: title,
+            content: content,
+            forum_category_id: parseInt(selectedcategory),
         };
 
         await axios
@@ -79,15 +69,7 @@ const ThreadCreate: React.FC = () => {
 
     return (
         <Container component="main" maxWidth="xs">
-            <Box
-            // sx={{
-            //     marginTop: 5,
-            //     display: "flex",
-            //     flexDirection: "column",
-            //     alignItems: "center",
-            //     "& .MuiTextField-root": { m: 1, width: "50ch" },
-            // }}
-            >
+            <Box>
                 {alert && <Alert severity="error">Please fill up all the information</Alert>}
                 <Box component="form" onSubmit={handleSubmit} noValidate>
                     <TextField
@@ -98,8 +80,8 @@ const ThreadCreate: React.FC = () => {
                         id="title"
                         label="Title"
                         name="title"
-                        value={form_data.title}
-                        onChange={handleChange}
+                        value={title}
+                        onChange={(event) => setTitle(event.target.value)}
                     />
                     <TextField
                         margin="normal"
@@ -109,10 +91,10 @@ const ThreadCreate: React.FC = () => {
                         id="content"
                         label="Content"
                         name="content"
-                        value={form_data.content}
+                        value={content}
                         multiline
                         rows={5}
-                        onChange={handleChange}
+                        onChange={(event) => setContent(event.target.value)}
                     />
                     <FormControl required variant="filled" sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel id="category-label">Category</InputLabel>
@@ -126,8 +108,9 @@ const ThreadCreate: React.FC = () => {
                             {all_categories}
                         </Select>
                     </FormControl>
-                    <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-                        Create new thread!
+                    <Divider />
+                    <Button type="submit" variant="contained">
+                        Create new thread
                     </Button>
                 </Box>
             </Box>

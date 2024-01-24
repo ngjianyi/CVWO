@@ -6,7 +6,6 @@ Rails.application.routes.draw do
 
   post "/login", to: "auth#login"
   get "/logout", to: "auth#logout"
-  get "threads_filter_category/:forum_category_id", to: "forum_threads#filter_category"
   get "/comments_filter_thread/:forum_thread_id", to: "forum_comments#filter_thread"
   get "/threads_filter_user/:username", to: "forum_threads#filter_user"
   get "/comments_filter_user/:username", to: "forum_comments#filter_user"

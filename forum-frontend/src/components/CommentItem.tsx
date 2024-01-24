@@ -24,8 +24,10 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
     const stored_username = getWithExpiry("username");
     const [alert, setAlert] = useState<boolean>(false);
     const [editable, setEditable] = useState<boolean>(false);
+
     const [content, setContent] = useState<string>(full_comment.comment.content);
 
+    // Edit/Delete menu logic
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -47,6 +49,7 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
         const body: Body = {
             content: content,
         };
+
         await axios
             .patch(url, body)
             .then((res) => {
@@ -144,7 +147,6 @@ const CommentItem: React.FC<Props> = ({ full_comment, updateComments }) => {
                 </>
             ) : (
                 // Under profile page
-
                 <CardContent>
                     <Typography>{full_comment.comment.content}</Typography>
                     <Link to={`/thread/${full_comment.comment.forum_thread_id}`}>

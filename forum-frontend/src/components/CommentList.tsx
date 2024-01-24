@@ -5,11 +5,8 @@ import Comment from "../types/Comment";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import { Typography } from "@mui/material";
 
-// type Props = {
-//     thread_id: number;
-// };
+import { Typography } from "@mui/material";
 
 type full_comment = {
     comment: Comment;
@@ -19,6 +16,7 @@ type full_comment = {
 const CommentList: React.FC = () => {
     const params = useParams();
     const stored_username = getWithExpiry("username");
+
     const [comments, setComments] = useState<never[]>([]);
 
     const updateComments = async () => {

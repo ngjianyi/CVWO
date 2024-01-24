@@ -3,10 +3,11 @@ import Category from "../types/Category";
 import Thread from "../types/Thread";
 import React, { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
+
 import Button from "@mui/material/Button";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
@@ -17,14 +18,17 @@ type Props = {
 type full_thread = { thread: Thread; author: string; category: string };
 
 const ThreadList: React.FC<Props> = ({ filtered_url }) => {
-    const [data, setData] = useState<full_thread[]>([]);
-    const [threads, setThreads] = useState<full_thread[]>([]);
-    const [search, setSearch] = useState<string>("");
+    const [category_options, setCategoryOptions] = useState<never[]>([]);
+    const [data, setData] = useState<full_thread[]>([]); // All threads
 
     const [category_label, setCategoryLabel] = useState<string>("Categories");
-    const [selectedcategory, setSelectedCategory] = useState<number>(0);
-    const [category_options, setCategoryOptions] = useState<never[]>([]);
+    const [threads, setThreads] = useState<full_thread[]>([]); // Filtered threads
 
+    // Filters
+    const [search, setSearch] = useState<string>("");
+    const [selectedcategory, setSelectedCategory] = useState<number>(0);
+
+    // Category menu logic
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -33,6 +37,19 @@ const ThreadList: React.FC<Props> = ({ filtered_url }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const url: string = "/forum_threads";
+    useEffect(() => {
+        axios
+            .get(filtered_url ? filtered_url : url)
+            .then((response) => {
+                setData(response.data);
+                setThreads(response.data);
+            })
+            .catch((error: Error | AxiosError) => {
+                console.log(error);
+            });
+    }, []);
 
     useEffect(() => {
         axios
@@ -61,19 +78,6 @@ const ThreadList: React.FC<Props> = ({ filtered_url }) => {
         }
         setThreads(filtered_threads);
     };
-
-    const url = "/forum_threads";
-    useEffect(() => {
-        axios
-            .get(filtered_url ? filtered_url : url)
-            .then((response) => {
-                setData(response.data);
-                setThreads(response.data);
-            })
-            .catch((error: Error | AxiosError) => {
-                console.log(error);
-            });
-    }, []);
 
     const all_categories: JSX.Element[] = category_options.map((category: Category) => (
         <MenuItem

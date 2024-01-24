@@ -10,6 +10,12 @@ export const themeOptions = createTheme({
         secondary: {
             main: "#45B0D2",
         },
+        error: {
+            main: "#BD4F4F",
+        },
+        warning: {
+            main: "#FFD3B9",
+        },
         background: {
             default: "#F2ECF8",
             paper: "#F2ECF8",
@@ -17,6 +23,13 @@ export const themeOptions = createTheme({
     },
     spacing: 8,
     components: {
+        MuiAppBar: {
+            defaultProps: {
+                sx: {
+                    backgroundColor: "#1F232F",
+                },
+            },
+        },
         MuiButtonBase: {
             defaultProps: {
                 disableRipple: true,
@@ -25,13 +38,7 @@ export const themeOptions = createTheme({
                 },
             },
         },
-        MuiAppBar: {
-            defaultProps: {
-                sx: {
-                    backgroundColor: "#1F232F",
-                },
-            },
-        },
+
         MuiCard: {
             defaultProps: {
                 sx: {
@@ -39,15 +46,6 @@ export const themeOptions = createTheme({
                     color: "#1F232F",
                     m: 2,
                     px: 2,
-                },
-            },
-        },
-        MuiTypography: {
-            defaultProps: {
-                sx: {
-                    color: "#1F232F",
-                    px: 1,
-                    m: 1,
                 },
             },
         },
@@ -67,6 +65,15 @@ export const themeOptions = createTheme({
         MuiMenuItem: {
             defaultProps: {
                 disableRipple: true,
+            },
+        },
+        MuiTypography: {
+            defaultProps: {
+                sx: {
+                    color: "#1F232F",
+                    px: 1,
+                    m: 1,
+                },
             },
         },
     },

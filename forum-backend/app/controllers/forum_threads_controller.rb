@@ -16,14 +16,7 @@ class ForumThreadsController < ApplicationController
     render json: {thread: @forum_thread, author: author, category: forum_category}
   end
 
-  # GET /thread_filter_category/1
-  def filter_category
-    @threads = ForumThread.all.order(created_at: :desc).select { |thread| thread.forum_category_id == Integer(params[:forum_category_id]) }
-    @full_threads = @threads.map{ |thread| {thread: thread, author: thread.user.username, category: thread.forum_category.name }}
-    render json: @full_threads
-  end
-
-  # GET /thread_filter_user/username
+  # GET /thread_filter_user/username Filter by user
   def filter_user
     @user = User.find_by_username(params[:username])
     @threads = ForumThread.all.order(created_at: :desc).select { |thread| thread.user_id == @user[:id] }

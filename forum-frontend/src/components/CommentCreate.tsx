@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
-import { Box, Button, Container, TextField, Alert } from "@mui/material";
+
+import { Alert, Box, Button, Container, TextField } from "@mui/material";
 
 type Props = {
     updateComments: () => void;
@@ -14,6 +15,7 @@ type Body = {
 
 const CommentForm: React.FC<Props> = ({ updateComments, thread_id }) => {
     const [alert, setAlert] = useState<boolean>(false);
+
     const [comment, setComment] = useState("");
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {

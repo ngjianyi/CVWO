@@ -1,5 +1,4 @@
 class AuthController < ApplicationController
-    # skip_before_action :authorized, only: [:login]
     rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
     def login
