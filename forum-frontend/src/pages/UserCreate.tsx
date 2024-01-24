@@ -62,7 +62,7 @@ const UserCreate: React.FC = () => {
             await axios
                 .post<Body>("/users", body)
                 .then((res) => {
-                    navigate("/");
+                    navigate("/login");
                     console.log(res);
                 })
                 .catch((error: Error | AxiosError) => {
